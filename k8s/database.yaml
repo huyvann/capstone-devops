@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: database
+  labels:
+    app: database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: database
+  template:
+    metadata:
+      labels:
+        app: database
+    spec:
+      containers:
+        - name: database
+          image: postgres:16
+          env:
+            - name: POSTGRES_USER
+              value: "admin"
+            - name: POSTGRES_PASSWORD
+              value: "mysecretpassword"
+            - name: POSTGRES_DB
+              value: "mydb"
+
+          volumeMounts:
+            - name: db-data
+              mountPath: /var/lib/postgresql/data
+          ports:
+            - containerPort: 5432
+
+      volumes:
+        - name: db-data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-svc
+spec:
+  selector:
+    app: database
+  ports:
+    - port: 5432
+      targetPort: 5432
+  type: ClusterIP

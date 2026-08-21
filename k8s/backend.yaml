@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend          # Deployment tìm Pod của mình qua label này
+  template:
+    metadata:
+      labels:
+        app: backend        # Pod PHẢI có label khớp với selector ở trên
+    spec:
+      containers:
+        - name: backend
+          image: hashicorp/http-echo   # image nhỏ, chỉ trả về text, tiện để test
+          args:
+            - "-text=Hello from backend"
+            - "-listen=:5678"
+          ports:
+            - containerPort: 5678
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-svc
+spec:
+  selector:
+    app: backend            # Service tìm Pod qua label này -- PHẢI khớp label Pod ở trên
+  ports:
+    - port: 8080             # port mà Service lắng nghe (frontend sẽ gọi vào đây)
+      targetPort: 5678        # port thật của container (phải khớp containerPort)
+  type: ClusterIP            # nội bộ cluster thôi, đúng như bạn vừa chọn ở phần lý thuyết
