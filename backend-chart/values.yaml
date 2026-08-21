@@ -1,0 +1,11 @@
+replicaCount: 2
+
+image:
+  repository: hashicorp/http-echo
+  tag: latest
+
+echoText: "Hello from Helm-managed backend"
+
+service:
+  type: ClusterIP
+  port: 8080

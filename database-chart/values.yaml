@@ -1,0 +1,14 @@
+replicaCount: 1
+
+image:
+  repository: postgres
+  tag: 16
+
+postgres:
+  user: admin
+  password: mysecretpassword
+  database: mydb
+
+service:
+  port: 5432
+  type: ClusterIP
